@@ -8,6 +8,7 @@ import {Container, Row, Col} from 'wix-style-react/Grid';
 import {default as WixInput} from 'wix-style-react/Input';
 import ToggleSwitch from 'wix-style-react/ToggleSwitch';
 import {default as WixRadioGroup} from 'wix-style-react/RadioGroup';
+import Dropdown from 'wix-style-react/Dropdown';
 import Text from 'wix-style-react/Text';
 
 import styles from './styles.scss';
@@ -88,25 +89,31 @@ Toggle.propTypes = {
 };
 
 
-const RadioGroup = ({value, options, onChange, ...props}) =>
-  <WixRadioGroup
-    value={value}
-    onChange={onChange}
-    {...props}
-    >
-    {options.map((option, i) =>
-      <WixRadioGroup.Radio
-        key={i}
-        value={option}
-        >
-        <Markdown source={`\`${option}\``}/>
-      </WixRadioGroup.Radio>
-    )}
-  </WixRadioGroup>;
+const List = ({value, values = [], onChange, ...props}) =>
+  values.length > 3 ?
+    <Dropdown
+      options={values.map(v => ({id: v, value: v}))}
+      selectedId={values.find((v => v.value === value))}
+      onSelect={({value}) => onChange(value)}
+      /> :
+    <WixRadioGroup
+      value={value}
+      onChange={onChange}
+      {...props}
+      >
+      {values.map((value, i) =>
+        <WixRadioGroup.Radio
+          key={i}
+          value={value}
+          >
+          <Markdown source={`\`${value}\``}/>
+        </WixRadioGroup.Radio>
+      )}
+    </WixRadioGroup>;
 
-RadioGroup.propTypes = {
+List.propTypes = {
   value: PropTypes.string,
-  options: PropTypes.arrayOf(PropTypes.string),
+  values: PropTypes.arrayOf(PropTypes.string),
   onChange: PropTypes.func
 };
 
@@ -143,6 +150,6 @@ export {
   Preview,
   Toggle,
   Input,
-  RadioGroup,
+  List,
   Code
 };

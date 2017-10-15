@@ -12,9 +12,13 @@ import {
   Code,
   Toggle,
   Input,
-  RadioGroup
+  List
 } from './FormComponents';
 
+const stripQuotes = string => {
+  const quoted = string.match(/^['"](.*?)['"]$/);
+  return quoted ? quoted[1] : string;
+};
 
 /**
   * Create a playground for some component, which is suitable for storybook. Given raw `source`, component reference
@@ -144,12 +148,11 @@ export default class extends Component {
   controllableComponentGetters = {
     string: ({dataHook}) => <Input dataHook={dataHook}/>,
     bool: ({dataHook}) => <Toggle dataHook={dataHook}/>,
-    enum: ({dataHook, type}) => (
-      <RadioGroup
+    enum: ({dataHook, type}) =>
+      <List
         dataHook={dataHook}
-        options={type.value.map(v => v.value.substr(1, v.value.length - 2))}
+        values={type.value.map(({value}) => stripQuotes(value))}
         />
-    )
   }
 
   getPropControlComponent = (propKey, type) => {
